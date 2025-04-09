@@ -1,0 +1,13 @@
+.idea/
+
+Librarium/bin/
+
+Librarium/obj/
+
+*.DotSettings*
+
+manifest.json
+
+out/
+
+*.zip
