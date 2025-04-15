@@ -6,7 +6,7 @@
         <Title>Librarium</Title>
         <PackageId>Librarium</PackageId>
         <Version>0.2.8</Version>
-        <AssemblyName>giosuel.Imperium</AssemblyName>
+        <AssemblyName>giosuel.Librarium</AssemblyName>
         <Description>Utility library for Imperium.</Description>
         <RootNamespace>Librarium</RootNamespace>
 

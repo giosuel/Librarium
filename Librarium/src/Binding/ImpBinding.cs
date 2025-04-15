@@ -23,8 +23,15 @@ public class ImpBinding<T> : IBinding<T>
     /// </summary>
     private readonly bool ignoreRefresh;
 
+    protected T value;
+
     public T DefaultValue { get; }
-    public T Value { get; protected set; }
+
+    public virtual T Value
+    {
+        get => value;
+        protected set => this.value = value;
+    }
 
     public ImpBinding()
     {
@@ -38,7 +45,7 @@ public class ImpBinding<T> : IBinding<T>
         bool ignoreRefresh = false
     )
     {
-        Value = currentValue;
+        value = currentValue;
         DefaultValue = !EqualityComparer<T>.Default.Equals(defaultValue, default)
             ? defaultValue
             : currentValue;

@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -15,6 +16,12 @@ namespace Librarium.Binding;
 public class ImpExternalBinding<T, R> : ImpBinding<T>
 {
     private readonly Func<T> valueGetter;
+
+    public override T Value
+    {
+        get => Utils.InvokeDefaultOnNull(valueGetter);
+        protected set => this.value = value;
+    }
 
     /// <param name="valueGetter">Getter function that returns the value</param>
     /// <param name="refresher">ImpBinding that the binder is listening to</param>
