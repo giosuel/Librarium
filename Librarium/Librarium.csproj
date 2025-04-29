@@ -3,7 +3,6 @@
         <Title>Librarium</Title>
         <Product>Librarium</Product>
         <PackageId>LibrariumLib</PackageId>
-        <Version>0.0.1</Version>
         <AssemblyName>giosuel.Librarium</AssemblyName>
         <Description>A modding library that provides utilities for the Imperium mods.</Description>
         <RootNamespace>Librarium</RootNamespace>

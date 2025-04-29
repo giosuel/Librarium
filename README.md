@@ -1,4 +1,4 @@
-![Librarium Logo](https://raw.githubusercontent.com/giosuel/Librarium/refs/heads/development/assets/logo.png)
+![Librarium Logo](https://raw.githubusercontent.com/giosuel/librarium/refs/heads/main/assets/logo.png)
 
 # Librarium
 
