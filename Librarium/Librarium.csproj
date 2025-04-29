@@ -1,38 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
-        <!-- General Project Information -->
-        <TargetFramework>netstandard2.1</TargetFramework>
         <Title>Librarium</Title>
-        <PackageId>Librarium</PackageId>
-        <Version>0.2.8</Version>
-        <AssemblyName>giosuel.Imperium</AssemblyName>
-        <Description>Utility library for Imperium.</Description>
+        <Product>Librarium</Product>
+        <PackageId>LibrariumLib</PackageId>
+        <Version>0.0.1</Version>
+        <AssemblyName>giosuel.Librarium</AssemblyName>
+        <Description>A modding library that provides utilities for the Imperium mods.</Description>
         <RootNamespace>Librarium</RootNamespace>
-
-        <PackageReadmeFile>../README.md</PackageReadmeFile>
-        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/giosuel/librarium</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/giosuel/librarium</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-
-        <!-- Build Information -->
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <LangVersion>preview</LangVersion>
-
-        <!-- NuGet Information -->
-        <RestoreAdditionalProjectSources>
-            https://api.nuget.org/v3/index.json;
-            https://nuget.bepinex.dev/v3/index.json
-        </RestoreAdditionalProjectSources>
-
-        <!-- Auto Versioning -->
-        <MinVerDefaultPreReleaseIdentifiers>dev</MinVerDefaultPreReleaseIdentifiers>
-        <MinVerTagPrefix>v</MinVerTagPrefix>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="BepInEx.Core" Version="5.*" />
-        <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" />
-    </ItemGroup>
 </Project>

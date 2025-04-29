@@ -24,6 +24,7 @@ public class ImpBinding<T> : IBinding<T>
     private readonly bool ignoreRefresh;
 
     public T DefaultValue { get; }
+
     public T Value { get; protected set; }
 
     public ImpBinding()

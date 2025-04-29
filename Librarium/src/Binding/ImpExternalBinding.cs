@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -14,8 +15,6 @@ namespace Librarium.Binding;
 /// <typeparam name="R">Type of the parent binding</typeparam>
 public class ImpExternalBinding<T, R> : ImpBinding<T>
 {
-    private readonly Func<T> valueGetter;
-
     /// <param name="valueGetter">Getter function that returns the value</param>
     /// <param name="refresher">ImpBinding that the binder is listening to</param>
     /// <param name="onPrimaryUpdate">
@@ -31,12 +30,6 @@ public class ImpExternalBinding<T, R> : ImpBinding<T>
         Action<T> secondaryUpdate = null
     ) : base(Utils.InvokeDefaultOnNull(valueGetter), primaryUpdate: onPrimaryUpdate, onUpdateSecondary: secondaryUpdate)
     {
-        this.valueGetter = valueGetter;
         if (refresher != null) refresher.onUpdate += _ => Set(Utils.InvokeDefaultOnNull(valueGetter));
-    }
-
-    public override void Set(T updatedValue, bool invokePrimary = true, bool invokeSecondary = true)
-    {
-        base.Set(Utils.InvokeDefaultOnNull(valueGetter), invokePrimary, invokeSecondary);
     }
 }

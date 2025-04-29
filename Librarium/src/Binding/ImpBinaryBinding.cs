@@ -40,6 +40,11 @@ public class ImpBinaryBinding : ImpBinding<bool>
         }
     }
 
+
+    public static bool operator true(ImpBinaryBinding obj) => obj.Value;
+    public static bool operator false(ImpBinaryBinding obj) => !obj.Value;
+    public static bool operator !(ImpBinaryBinding obj) => !obj.Value;
+
     /// <summary>
     /// Creates a combined binary binding from two or more provided bindings.
     ///

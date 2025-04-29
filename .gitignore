@@ -11,3 +11,5 @@ manifest.json
 out/
 
 *.zip
+
+artifacts/
