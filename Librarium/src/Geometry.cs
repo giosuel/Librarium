@@ -233,23 +233,24 @@ public static class Geometry
         return obj;
     }
 
+    private const float SPHERE_RINGS_COUNT = 32f;
+    private const float SPHERE_LINES_COUNT = 16f;
+
     /// <summary>
     ///     Generates a LOS cone mesh implementation by <see href="https://github.com/AdalynBlack/LC-EnemyDebug" /> :3
     /// </summary>
     /// <param name="angle">Angle of the generated cone</param>
-    /// <param name="ringCount">The amount of rings the cone should have</param>
-    /// <param name="lineCount">The amount of lines the cone should have</param>
-    public static Mesh CreateCone(float angle, int ringCount = 32, int lineCount = 16)
+    private static Mesh CreateCone(float angle)
     {
         var coneMesh = new Mesh();
 
         angle *= 2;
 
         // Ring count has to be 2 or higher, or it breaks because I don't get paid enough to fix it :D
-        var ringsCount = Mathf.Max(2, (int)(ringCount * (angle / 360f)) + 1);
-        var vertCount = ringsCount * (int)lineCount + 2;
+        var ringsCount = Mathf.Max(2, (int)(SPHERE_RINGS_COUNT * (angle / 360f)) + 1);
+        var vertCount = ringsCount * (int)SPHERE_LINES_COUNT + 2;
         var verts = new Vector3[vertCount];
-        var indices = new int[6 * (ringsCount + 1) * (int)lineCount];
+        var indices = new int[6 * (ringsCount + 1) * (int)SPHERE_LINES_COUNT];
 
         // Set the centers of both ends of the cone
         verts[0] = new Vector3(0f, 0f, 1f);
@@ -258,17 +259,17 @@ public static class Geometry
         for (var ring = 1; ring < (ringsCount + 1); ring++)
         {
             // Figure out where in the array to edit for this ring
-            var vertOffset = (ring - 1) * (int)lineCount + 1;
+            var vertOffset = (ring - 1) * (int)SPHERE_LINES_COUNT + 1;
 
             // Figure out the distance and size of the vertex ring
             var ringAngle = Mathf.Deg2Rad * angle * ((float)ring / ringsCount) / 2f;
             var ringDistance = Mathf.Cos(ringAngle);
             var ringSize = Mathf.Sin(ringAngle);
 
-            for (var vert = 0; vert < lineCount; vert++)
+            for (var vert = 0; vert < SPHERE_LINES_COUNT; vert++)
             {
                 // Find the angle of this vertex
-                var vertAngle = -2 * Mathf.PI * (vert / lineCount);
+                var vertAngle = -2 * Mathf.PI * (vert / SPHERE_LINES_COUNT);
 
                 // Get the exact index to modify for this vertex
                 var currentVert = vertOffset + vert;
@@ -279,26 +280,26 @@ public static class Geometry
                 ) * ringSize;
 
                 // Get the index in the indices array to modify for this vertex
-                var indexOffset = 6 * vertOffset + vert * 6 - 3 * (int)lineCount;
+                var indexOffset = 6 * vertOffset + vert * 6 - 3 * (int)SPHERE_LINES_COUNT;
 
                 // Precalcualte the next vertex in the ring, accounting for wrapping
-                var nextVert = (int)(vertOffset + (vert + 1) % lineCount);
+                var nextVert = (int)(vertOffset + (vert + 1) % SPHERE_LINES_COUNT);
 
                 // If we're not on the first ring (yes I started at 1 to make the math easier)
                 // Draw the triangles for the quad
                 if (ring != 1)
                 {
-                    indices[indexOffset] = currentVert - (int)lineCount;
+                    indices[indexOffset] = currentVert - (int)SPHERE_LINES_COUNT;
                     indices[indexOffset + 1] = nextVert;
                     indices[indexOffset + 2] = currentVert;
-                    indices[indexOffset + 3] = nextVert - (int)lineCount;
+                    indices[indexOffset + 3] = nextVert - (int)SPHERE_LINES_COUNT;
                     indices[indexOffset + 4] = nextVert;
-                    indices[indexOffset + 5] = currentVert - (int)lineCount;
+                    indices[indexOffset + 5] = currentVert - (int)SPHERE_LINES_COUNT;
                 }
                 else
                 {
                     // We're on ring 1, offset our index to use 3 indices instead of 6, so we can use tris
-                    indexOffset += 3 * (int)lineCount;
+                    indexOffset += 3 * (int)SPHERE_LINES_COUNT;
                     indexOffset /= 2;
                     // Connect to first index if we're on the innermost ring
                     indices[indexOffset] = 0;
@@ -309,7 +310,7 @@ public static class Geometry
                 if (ring == ringsCount)
                 {
                     // Go forwards one layer if we're on the last ring
-                    indexOffset += (int)lineCount * 6;
+                    indexOffset += (int)SPHERE_LINES_COUNT * 6;
                     // Connect to last index if we're on the outermost ring
                     indices[indexOffset] = vertCount - 1;
                     indices[indexOffset + 1] = currentVert;
