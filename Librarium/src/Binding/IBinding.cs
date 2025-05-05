@@ -11,7 +11,7 @@ public interface IBinding<T> : IResettable, IRefreshable
     /// <summary>
     ///     Primary action that is invoked every time the binding state is updated. Provides the updated state.
     /// </summary>
-    public event Action<T> onUpdate;
+    public event Action<T> OnUpdate;
 
     /// <summary>
     ///     Secondary action that is invoked everytime the binding state is updated, except if explicitly skipped.
@@ -21,12 +21,12 @@ public interface IBinding<T> : IResettable, IRefreshable
     ///     When invoking a binding update via <see cref="Set"/>, the caller can specify to skip the secondary update.
     ///     This can be useful to avoid circular updates or skip certain callbacks when invoking an update.
     /// </summary>
-    public event Action<T> onUpdateSecondary;
+    public event Action<T> OnUpdateSecondary;
 
     /// <summary>
     ///     Primary action that is invoked every time the binding state is updated. Does not provide the updated state.
     /// </summary>
-    public event Action onTrigger;
+    public event Action OnTrigger;
 
     /// <summary>
     ///     Secondary action that is invoked everytime the binding state is updated, except if explicitly skipped.
@@ -36,7 +36,7 @@ public interface IBinding<T> : IResettable, IRefreshable
     ///     When invoking a binding update via <see cref="Set"/>, the caller can specify to skip the secondary update.
     ///     This can be useful to avoid circular updates or skip certain callbacks when invoking an update.
     /// </summary>
-    public event Action onTriggerSecondary;
+    public event Action OnTriggerSecondary;
 
     public T Value { get; }
     public T DefaultValue { get; }

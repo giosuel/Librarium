@@ -8,7 +8,7 @@ namespace Librarium.Binding;
 
 public class ImpEvent
 {
-    public event Action onTrigger;
+    public event Action OnTrigger;
 
-    public void Trigger() => onTrigger?.Invoke();
+    public void Trigger() => OnTrigger?.Invoke();
 }

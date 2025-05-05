@@ -9,8 +9,8 @@ namespace Librarium.Binding;
 
 public class ImpBinaryBinding : ImpBinding<bool>
 {
-    public event Action onTrue;
-    public event Action onFalse;
+    public event Action OnTrue;
+    public event Action OnFalse;
 
     public ImpBinaryBinding(
         bool currentValue,
@@ -18,25 +18,25 @@ public class ImpBinaryBinding : ImpBinding<bool>
         Action onFalse = null
     ) : base(currentValue)
     {
-        this.onTrue += onTrue;
-        this.onFalse += onFalse;
+        OnTrue += onTrue;
+        OnFalse += onFalse;
 
-        onUpdate += OnUpdate;
+        OnUpdate += OnBaseUpdate;
     }
 
     public void Toggle() => Set(!Value);
     public void SetTrue() => Set(true);
     public void SetFalse() => Set(false);
 
-    private void OnUpdate(bool updatedValue)
+    private void OnBaseUpdate(bool updatedValue)
     {
         if (updatedValue)
         {
-            onTrue?.Invoke();
+            OnTrue?.Invoke();
         }
         else
         {
-            onFalse?.Invoke();
+            OnFalse?.Invoke();
         }
     }
 
@@ -56,7 +56,7 @@ public class ImpBinaryBinding : ImpBinding<bool>
         var combinedBinding = new ImpBinaryBinding(GetCombinedAndValue(bindingPairs));
         foreach (var bindingPair in bindingPairs)
         {
-            bindingPair.Item1.onTrigger += () => combinedBinding.Set(GetCombinedAndValue(bindingPairs));
+            bindingPair.Item1.OnTrigger += () => combinedBinding.Set(GetCombinedAndValue(bindingPairs));
         }
 
         return combinedBinding;
@@ -77,7 +77,7 @@ public class ImpBinaryBinding : ImpBinding<bool>
         var combinedBinding = new ImpBinaryBinding(GetCombinedOrValue(bindingPairs));
         foreach (var bindingPair in bindingPairs)
         {
-            bindingPair.Item1.onTrigger += () => combinedBinding.Set(GetCombinedOrValue(bindingPairs));
+            bindingPair.Item1.OnTrigger += () => combinedBinding.Set(GetCombinedOrValue(bindingPairs));
         }
 
         return combinedBinding;

@@ -240,7 +240,7 @@ public static class Geometry
     ///     Generates a LOS cone mesh implementation by <see href="https://github.com/AdalynBlack/LC-EnemyDebug" /> :3
     /// </summary>
     /// <param name="angle">Angle of the generated cone</param>
-    private static Mesh CreateCone(float angle)
+    public static Mesh CreateCone(float angle)
     {
         var coneMesh = new Mesh();
 

@@ -13,10 +13,10 @@ namespace Librarium.Binding;
 /// <typeparam name="T"></typeparam>
 public class ImpBinding<T> : IBinding<T>
 {
-    public event Action<T> onUpdate;
-    public event Action<T> onUpdateSecondary;
-    public event Action onTrigger;
-    public event Action onTriggerSecondary;
+    public event Action<T> OnUpdate;
+    public event Action<T> OnUpdateSecondary;
+    public event Action OnTrigger;
+    public event Action OnTriggerSecondary;
 
     /// <summary>
     /// If this is set to true, calls to <see cref="Refresh"/> won't invoke any events.
@@ -46,8 +46,8 @@ public class ImpBinding<T> : IBinding<T>
 
         this.ignoreRefresh = ignoreRefresh;
 
-        this.onUpdate += primaryUpdate;
-        this.onUpdateSecondary += onUpdateSecondary;
+        OnUpdate += primaryUpdate;
+        OnUpdateSecondary += onUpdateSecondary;
     }
 
     public virtual void Set(T updatedValue, bool invokePrimary = true, bool invokeSecondary = true)
@@ -57,14 +57,14 @@ public class ImpBinding<T> : IBinding<T>
 
         if (invokePrimary)
         {
-            onUpdate?.Invoke(Value);
-            onTrigger?.Invoke();
+            OnUpdate?.Invoke(Value);
+            OnTrigger?.Invoke();
         }
 
         if (invokeSecondary && !isSame)
         {
-            onUpdateSecondary?.Invoke(updatedValue);
-            onTriggerSecondary?.Invoke();
+            OnUpdateSecondary?.Invoke(updatedValue);
+            OnTriggerSecondary?.Invoke();
         }
     }
 

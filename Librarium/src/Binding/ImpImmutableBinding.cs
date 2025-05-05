@@ -17,22 +17,22 @@ public class ImpImmutableBinding<T> : IBinding<T>
     public T Value => parentWritableBinding.Value;
     public T DefaultValue => parentWritableBinding.DefaultValue;
 
-    public event Action<T> onUpdate;
-    public event Action onTrigger;
+    public event Action<T> OnUpdate;
+    public event Action OnTrigger;
 
-    public event Action<T> onUpdateSecondary;
-    public event Action onTriggerSecondary;
+    public event Action<T> OnUpdateSecondary;
+    public event Action OnTriggerSecondary;
 
     public static ImpImmutableBinding<T> Wrap(IBinding<T> parent) => new(parent);
 
     private ImpImmutableBinding(IBinding<T> parentWritableBinding)
     {
         this.parentWritableBinding = parentWritableBinding;
-        parentWritableBinding.onUpdate += value => onUpdate?.Invoke(value);
-        parentWritableBinding.onTrigger += () => onTrigger?.Invoke();
+        parentWritableBinding.OnUpdate += value => OnUpdate?.Invoke(value);
+        parentWritableBinding.OnTrigger += () => OnTrigger?.Invoke();
 
-        parentWritableBinding.onUpdateSecondary += value => onUpdateSecondary?.Invoke(value);
-        parentWritableBinding.onTriggerSecondary += () => onTriggerSecondary?.Invoke();
+        parentWritableBinding.OnUpdateSecondary += value => OnUpdateSecondary?.Invoke(value);
+        parentWritableBinding.OnTriggerSecondary += () => OnTriggerSecondary?.Invoke();
     }
 
     public void Set(T updatedValue, bool invokePrimary = true, bool invokeSecondary = true)
