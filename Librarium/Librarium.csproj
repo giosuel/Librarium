@@ -22,6 +22,16 @@
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="5.*"/>
+        <PackageReference Include="UnityEngine.Modules" Version="2022.3.21" IncludeAssets="compile"/>
+
+        <PackageReference Include="MinVer" Version="4.3.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
     <!-- Enable debug symbols. This will show source code line numbers in stack traces. -->
     <PropertyGroup>
         <DebugSymbols>true</DebugSymbols>
@@ -41,56 +51,46 @@
         <None Include="../assets/icon.png" Pack="true" PackagePath="assets/"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="BepInEx.Core" Version="5.*"/>
-        <PackageReference Include="UnityEngine.Modules" Version="2022.3.21" IncludeAssets="compile"/>
-
-        <PackageReference Include="MinVer" Version="4.3.0">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-    </ItemGroup>
-
     <Target Name="SetPluginVersion" DependsOnTargets="MinVer">
         <PropertyGroup>
             <PlainVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)</PlainVersion>
         </PropertyGroup>
     </Target>
 
-    <Target Name="AddGeneratedFile"
+    <Target
+            Name="AddGeneratedFile"
+            BeforeTargets="BeforeBuild;CoreCompile"
             DependsOnTargets="SetPluginVersion"
-            BeforeTargets="BeforeCompile;CoreCompile"
             Inputs="$(MSBuildAllProjects)"
-            Outputs="$(IntermediateOutputPath)LCMPluginInfo.cs">
+            Outputs="$(IntermediateOutputPath)GeneratedFile.cs">
         <PropertyGroup>
-            <LCMPluginGuid Condition="'$(LCMPluginGuid)' == ''">$(AssemblyName)</LCMPluginGuid>
-            <LCMPluginName Condition="'$(LCMPluginName)' == ''">$(Product)</LCMPluginName>
-            <LCMPluginVersion Condition="'$(LCMPluginVersion)' == ''">$(PlainVersion)</LCMPluginVersion>
+            <BepInExPluginGuid Condition="'$(BepInExPluginGuid)' == ''">$(AssemblyName)</BepInExPluginGuid>
+            <BepInExPluginName Condition="'$(BepInExPluginName)' == ''">$(Product)</BepInExPluginName>
+            <BepInExPluginVersion Condition="'$(BepInExPluginVersion)' == ''">$(PlainVersion)</BepInExPluginVersion>
             <GeneratedText><![CDATA[
-internal static class LCMPluginInfo
+namespace $(RootNamespace)
 {
-  public const string PLUGIN_GUID = "$(LCMPluginGuid)"%3B
-  public const string PLUGIN_NAME = "$(LCMPluginName)"%3B
-  public const string PLUGIN_VERSION = "$(LCMPluginVersion)"%3B
+    internal static class LCMPluginInfo
+    {
+        public const string PLUGIN_GUID = "$(BepInExPluginGuid)"%3B
+        public const string PLUGIN_NAME = "$(BepInExPluginName)"%3B
+        public const string PLUGIN_VERSION = "$(BepInExPluginVersion)"%3B
+    }
 }
-]]></GeneratedText>
+      ]]></GeneratedText>
             <GeneratedFilePath>$(IntermediateOutputPath)LCMPluginInfo.cs</GeneratedFilePath>
         </PropertyGroup>
-
         <ItemGroup>
-            <Compile Include="$(GeneratedFilePath)"/>
-            <FileWrites Include="$(GeneratedFilePath)"/>
+            <Compile Include="$(GeneratedFilePath)" />
+            <FileWrites Include="$(GeneratedFilePath)" />
         </ItemGroup>
-
-        <WriteLinesToFile Lines="$(GeneratedText)" File="$(GeneratedFilePath)"
-                          WriteOnlyWhenDifferent="true" Overwrite="true"/>
-
+        <WriteLinesToFile Lines="$(GeneratedText)" File="$(GeneratedFilePath)" WriteOnlyWhenDifferent="true" Overwrite="true" />
     </Target>
 
     <!-- Call with `dotnet build -target:PackThunderstore` -->
     <Target Name="PackThunderstore" DependsOnTargets="PostBuildEvent;SetPluginVersion">
         <Exec Command="dotnet tool restore"/>
-        <Exec Command="dotnet tcli build --config-path &quot;$(SolutionDir)thunderstore.toml&quot; --package-version $(PlainVersion)"/>
+        <Exec Command="dotnet tcli build --config-path &quot;$(ProjectDir)thunderstore.toml&quot; --package-version $(PlainVersion)"/>
         <ItemGroup>
             <FilesToRename Include="$(ProjectDir)dist/*-$(PlainVersion).zip"/>
         </ItemGroup>
@@ -99,6 +99,6 @@ internal static class LCMPluginInfo
 
     <!-- This is manually called by the github actions publish workflow -->
     <Target Name="PublishThunderstore" DependsOnTargets="PackThunderstore">
-        <Exec Command="dotnet tcli publish --config-path &quot;$(SolutionDir)thunderstore.toml&quot; --package-version $(PlainVersion)"/>
+        <Exec Command="dotnet tcli publish --config-path &quot;$(ProjectDir)thunderstore.toml&quot; --package-version $(PlainVersion)"/>
     </Target>
 </Project>
