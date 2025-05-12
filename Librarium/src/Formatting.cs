@@ -18,7 +18,7 @@ public static class Formatting
     /// <returns></returns>
     public static string FormatVector(
         Vector3 input,
-        int roundDigits = -1,
+        int roundDigits = 1,
         string separator = "/",
         string unit = ""
     )
