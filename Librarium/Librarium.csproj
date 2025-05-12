@@ -1,10 +1,104 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Title>Librarium</Title>
+        <Authors>giosuel</Authors>
         <Product>Librarium</Product>
         <PackageId>LibrariumLib</PackageId>
         <AssemblyName>giosuel.Librarium</AssemblyName>
         <Description>A modding library that provides utilities for the Imperium mods.</Description>
         <RootNamespace>Librarium</RootNamespace>
+
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <PackageProjectUrl>https://github.com/giosuel/librarium</PackageProjectUrl>
+        <PackageIcon>assets/icon.png</PackageIcon>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>repo;bepinex;harmony;library;mod;unity</PackageTags>
+
+        <RepositoryUrl>https://github.com/giosuel/librarium</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="5.*"/>
+        <PackageReference Include="UnityEngine.Modules" Version="2022.3.21" IncludeAssets="compile"/>
+
+        <PackageReference Include="MinVer" Version="4.3.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <!-- Enable debug symbols. This will show source code line numbers in stack traces. -->
+    <PropertyGroup>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>embedded</DebugType>
+        <!-- Substitute full path to this directory with ./, hiding it from debug symbols. -->
+        <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
+    </PropertyGroup>
+
+    <!-- MinVer -->
+    <PropertyGroup>
+        <MinVerDefaultPreReleaseIdentifiers>dev</MinVerDefaultPreReleaseIdentifiers>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="/"/>
+        <None Include="../assets/icon.png" Pack="true" PackagePath="assets/"/>
+    </ItemGroup>
+
+    <Target Name="SetPluginVersion" DependsOnTargets="MinVer">
+        <PropertyGroup>
+            <PlainVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)</PlainVersion>
+        </PropertyGroup>
+    </Target>
+
+    <Target
+            Name="AddGeneratedFile"
+            BeforeTargets="BeforeBuild;CoreCompile"
+            DependsOnTargets="SetPluginVersion"
+            Inputs="$(MSBuildAllProjects)"
+            Outputs="$(IntermediateOutputPath)GeneratedFile.cs">
+        <PropertyGroup>
+            <BepInExPluginGuid Condition="'$(BepInExPluginGuid)' == ''">$(AssemblyName)</BepInExPluginGuid>
+            <BepInExPluginName Condition="'$(BepInExPluginName)' == ''">$(Product)</BepInExPluginName>
+            <BepInExPluginVersion Condition="'$(BepInExPluginVersion)' == ''">$(PlainVersion)</BepInExPluginVersion>
+            <GeneratedText><![CDATA[
+namespace $(RootNamespace)
+{
+    internal static class LCMPluginInfo
+    {
+        public const string PLUGIN_GUID = "$(BepInExPluginGuid)"%3B
+        public const string PLUGIN_NAME = "$(BepInExPluginName)"%3B
+        public const string PLUGIN_VERSION = "$(BepInExPluginVersion)"%3B
+    }
+}
+      ]]></GeneratedText>
+            <GeneratedFilePath>$(IntermediateOutputPath)LCMPluginInfo.cs</GeneratedFilePath>
+        </PropertyGroup>
+        <ItemGroup>
+            <Compile Include="$(GeneratedFilePath)" />
+            <FileWrites Include="$(GeneratedFilePath)" />
+        </ItemGroup>
+        <WriteLinesToFile Lines="$(GeneratedText)" File="$(GeneratedFilePath)" WriteOnlyWhenDifferent="true" Overwrite="true" />
+    </Target>
+
+    <!-- Call with `dotnet build -target:PackThunderstore` -->
+    <Target Name="PackThunderstore" DependsOnTargets="PostBuildEvent;SetPluginVersion">
+        <Exec Command="dotnet tool restore"/>
+        <Exec Command="dotnet tcli build --config-path &quot;$(ProjectDir)thunderstore.toml&quot; --package-version $(PlainVersion)"/>
+        <ItemGroup>
+            <FilesToRename Include="$(ProjectDir)dist/*-$(PlainVersion).zip"/>
+        </ItemGroup>
+        <Move SourceFiles="@(FilesToRename)" DestinationFiles="@(FilesToRename -&gt; Replace($(PlainVersion), $(MinVerVersion)))"/>
+    </Target>
+
+    <!-- This is manually called by the github actions publish workflow -->
+    <Target Name="PublishThunderstore" DependsOnTargets="PackThunderstore">
+        <Exec Command="dotnet tcli publish --config-path &quot;$(ProjectDir)thunderstore.toml&quot; --package-version $(PlainVersion)"/>
+    </Target>
 </Project>

@@ -15,20 +15,20 @@ containsNsfwContent = false
 BepInEx-BepInExPack = "5.4.2100"
 
 [build]
-icon = "assets/icon.png"
-readme = "README.md"
-outdir = "artifacts/thunderstore/"
+icon = "../assets/icon.png"
+readme = "../README.md"
+outdir = "../artifacts/thunderstore/"
 
 [[build.copy]]
-source = "artifacts/bin/Librarium/release/giosuel.Librarium.dll"
+source = "../artifacts/bin/Librarium/release/giosuel.Librarium.dll"
 target = "/"
 
 [[build.copy]]
-source = "CHANGELOG.md"
+source = "../CHANGELOG.md"
 target = "/"
 
 [[build.copy]]
-source = "LICENSE"
+source = "../LICENSE"
 target = "/"
 
 [publish]

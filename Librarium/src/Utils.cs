@@ -51,7 +51,7 @@ public static class Utils
     /// <param name="callback"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T InvokeDefaultOnNull<T>(Func<T> callback)
+    public static T InvokeOrDefault<T>(Func<T> callback)
     {
         try
         {
